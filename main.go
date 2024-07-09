@@ -11,6 +11,7 @@ import (
 type User struct {
 	Id_user int    `json:"id"`
 	Email   string `json:"email"`
+	Name    string `json:"name"`
 }
 
 func main() {
@@ -30,7 +31,7 @@ func main() {
 
 	// Rota para buscar dados da tabela 'users'
 	app.Get("/users", func(c *fiber.Ctx) error {
-		rows, err := db.Query("SELECT id_user, email FROM users")
+		rows, err := db.Query("SELECT id_user, email, name FROM users")
 		if err != nil {
 			return c.Status(500).SendString(err.Error())
 		}
@@ -39,7 +40,7 @@ func main() {
 		var users []User
 		for rows.Next() {
 			var user User
-			if err := rows.Scan(&user.Id_user, &user.Email); err != nil {
+			if err := rows.Scan(&user.Id_user, &user.Email, &user.Name); err != nil {
 				return c.Status(500).SendString(err.Error())
 			}
 			users = append(users, user)
@@ -62,7 +63,7 @@ func main() {
 		}
 
 		// Inserir um novo registro na tabela 'users'
-		result, err := db.Exec("INSERT INTO users (email) VALUES (?)", user.Email)
+		result, err := db.Exec("INSERT INTO users (email,name) VALUES (?,?)", user.Email, user.Name)
 		if err != nil {
 			return c.Status(500).SendString(err.Error())
 		}
