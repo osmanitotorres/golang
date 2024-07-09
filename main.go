@@ -2,11 +2,22 @@ package main
 
 import (
 	"database/sql"
+	"encoding/json"
+	"fmt"
 	"log"
+	"os"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/gofiber/fiber/v2"
 )
+
+type Config struct {
+	DBUsername string `json:"db_username"`
+	DBPassword string `json:"db_password"`
+	DBHost     string `json:"db_host"`
+	DBPort     string `json:"db_port"`
+	DBName     string `json:"db_name"`
+}
 
 type User struct {
 	Id_user int    `json:"id"`
@@ -15,10 +26,34 @@ type User struct {
 }
 
 func main() {
+
+	configFile, err := os.Open("config.json")
+	if err != nil {
+		log.Fatal("Erro ao abrir o arquivo de configuração: ", err)
+		return
+	}
+
+	defer configFile.Close()
+
+	var config Config
+	jsonParser := json.NewDecoder(configFile)
+	if err := jsonParser.Decode(&config); err != nil {
+		log.Fatal("Erro ao fazer parse do arquivo de configuração:", err)
+		return
+	}
+
+	user := config.DBUsername
+	password := config.DBPassword
+	host := config.DBHost
+	port := config.DBPort
+	database := config.DBName
+
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", user, password, host, port, database)
+
 	app := fiber.New()
 
 	// Conectar ao banco de dados MySQL
-	db, err := sql.Open("mysql", "osmanito:Lrfg@2024@tcp(127.0.0.1:3306)/banco2")
+	db, err := sql.Open("mysql", dsn)
 	if err != nil {
 		log.Fatal(err)
 	}
