@@ -62,13 +62,18 @@ func main() {
 			return c.Status(400).SendString(err.Error())
 		}
 
+		if user.Name == "" || user.Email == "" {
+			return c.Status(400).SendString("Nome e Email não podem estar vazios!")
+		}
+
 		// Inserir um novo registro na tabela 'users'
-		result, err := db.Exec("INSERT INTO users (email,name) VALUES (?,?)", user.Email, user.Name)
+		result, err := db.Exec("INSERT INTO users (name, email) VALUES (?,?)", user.Name, user.Email)
 		if err != nil {
 			return c.Status(500).SendString(err.Error())
 		}
 
 		id, err := result.LastInsertId()
+
 		if err != nil {
 			return c.Status(500).SendString(err.Error())
 		}
