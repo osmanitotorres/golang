@@ -88,7 +88,7 @@ func main() {
 		return c.JSON(users)
 	})
 
-	// Rota para inserir um novo usuário na tabela 'users'
+	//=====  END POINT 00001 =======   Rota para inserir um novo usuário na tabela 'users'
 	app.Post("/users", func(c *fiber.Ctx) error {
 		var user User
 
@@ -117,6 +117,34 @@ func main() {
 
 		return c.Status(201).JSON(user)
 	})
+
+	//===== END POINT 00003	====  Rota para receber arquivo
+
+	app.Post("/upload", func(c *fiber.Ctx) error {
+		// Recebe o arquivo
+		file, err := c.FormFile("file")
+		if err != nil {
+			return c.Status(fiber.StatusBadRequest).SendString("Falha ao receber o arquivo")
+		}
+
+		// Caminho onde o arquivo será salvo
+		filePath := fmt.Sprintf("./uploads/%s", file.Filename)
+
+		// Salva o arquivo no diretório
+		if err := c.SaveFile(file, filePath); err != nil {
+			return c.Status(fiber.StatusInternalServerError).SendString("Falha ao salvar o arquivo")
+		}
+
+		return c.SendString("Arquivo enviado com sucesso")
+	})
+
+	// Cria o diretório uploads se não existir
+	if _, err := os.Stat("./uploads"); os.IsNotExist(err) {
+		err = os.Mkdir("./uploads", 0755)
+		if err != nil {
+			log.Fatalf("Falha ao criar os diretórios de upload: %v", err)
+		}
+	}
 
 	log.Fatal(app.Listen(":3000"))
 }
