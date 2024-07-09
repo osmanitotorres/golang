@@ -69,7 +69,7 @@ func main() {
 		// Inserir um novo registro na tabela 'users'
 		result, err := db.Exec("INSERT INTO users (name, email) VALUES (?,?)", user.Name, user.Email)
 		if err != nil {
-			return c.Status(500).JSON(err.Error())
+			return c.Status(500).SendString(err.Error())
 		}
 
 		id, err := result.LastInsertId()
