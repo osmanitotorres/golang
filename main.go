@@ -64,7 +64,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	// Rota para buscar dados da tabela 'users'
+	//=====  END POINT 00002 =======   Rota para consultar usuários
 	app.Get("/users", func(c *fiber.Ctx) error {
 		rows, err := db.Query("SELECT id_user, email, name FROM users")
 		if err != nil {
