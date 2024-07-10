@@ -146,11 +146,19 @@ func main() {
 		}
 	}
 
-	//==== Valida CNPJ =========
+	//========= Valida CNPJ =========
 	app.Get("/validacnpj", func(c *fiber.Ctx) error {
-		cnpj := c.Query("cnpj")
+		//cnpj := c.Query("cnpj")
+		queryParams := c.Context().QueryArgs()
+		params := make(map[string]string)
+		// Itera sobre todos os parâmetros de consulta e adiciona ao mapa
+		queryParams.VisitAll(func(key, value []byte) {
+			params[string(key)] = string(value)
+		})
 
-		return c.SendString(cnpj)
+		return c.JSON(fiber.Map{
+			"queryParams": params,
+		})
 	})
 
 	log.Fatal(app.Listen(":3000"))
