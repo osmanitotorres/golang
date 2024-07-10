@@ -146,5 +146,12 @@ func main() {
 		}
 	}
 
+	//==== Valida CNPJ =========
+	app.Get("/validacnpj", func(c *fiber.Ctx) error {
+		cnpj := c.Query("cnpj")
+
+		return c.SendString(cnpj)
+	})
+
 	log.Fatal(app.Listen(":3000"))
 }
