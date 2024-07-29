@@ -1,15 +1,16 @@
 
-create table users_comments
+create table users
 (
     id_user integer not null auto_increment,
     date_add datetime default now(),
     date_update datetime default now(),
+    name varchar(80) not null,
     email varchar(80) not null,
     primary key (id_user)
 );
 
 
-create table users
+create table users_comments
 (
     id_comment  int  not null primary key auto_increment,
     id_user     int  not null,
@@ -19,7 +20,7 @@ create table users
     status      tinyint  default 0                 null
 );
 
-create table banco2.config_empresas
+create table config_empresas
 (
     id                   int auto_increment
         primary key,
