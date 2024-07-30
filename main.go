@@ -164,7 +164,7 @@ func main() {
 	certFile := "/root/go/src/rest/golang/fullchain.pem"
 	keyFile := "/root/go/src/rest/golang/privkey.pem"
 
-	log.Fatal(app.ListenTLS(":443", certFile, keyFile))
+	log.Fatal(app.ListenTLS(":3000", certFile, keyFile))
 
 	//log.Fatal(app.Listen(":3000"))
 }
